@@ -11,7 +11,7 @@ dotenv.config()
 const app = express();
 
 const connectionString = process.env.MONGO_URL;
-console.log(connectionString)
+
 
 mongoose.connect(connectionString).then(
     ( )=> {
