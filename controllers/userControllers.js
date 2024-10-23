@@ -1,7 +1,7 @@
 import User from '../models/user.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-
+import dotenv from 'dotenv';
 
 export const postUser = async (req, res) => {  
     try {
@@ -51,7 +51,7 @@ export const loginUser = async (req, res) => {
                 message: "User not found",
             });
         }else{
-            const isPasswordValid = bcrypt.compareSync(Credentials.password, user.password);
+            const isPasswordValid = bcrypt.compareSync(credentials.password, user.password);
         }
             if (!isPasswordValid) {
                 res.status(403).json({
@@ -71,7 +71,8 @@ export const loginUser = async (req, res) => {
         };
 
         
-        const token = jwt.sign(payload, "secret", { expiresIn: "1h" });
+        const token = jwt.sign(payload,process.env.JWT_KEY, { expiresIn: "1h" });
+        
 
        
         res.status(200).json({
