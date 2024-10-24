@@ -1,10 +1,10 @@
 // index.js
-
 import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import userRouter from './routes/userRoute.js';
 import galleryItemRouter from './routes/galleryItemRoute.js';
+import categoryRouter from './routes/categoryRoute.js'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv';
 dotenv.config()
@@ -26,25 +26,28 @@ mongoose.connect(connectionString).then(
 
 app.use(bodyParser.json());
 
-app.use((req, res, next) =>{
-    const token =req.header("Authorization")?.replace("Bearer","")
-    if(token!=null){
-        jwt.verify(token,process.env.JWT_KEY,(err,decoded)=>{
-            if(decoded==null){
-                req.user = decoded;
-                console.log(decoded);
-                next();
-            }
-        });
-    }else{
+app.use((req, res, next) => {
+    const token = req.header("Authorization")?.replace("Bearer ", "");
+    if (token) {
+      jwt.verify(token, process.env.JWT_KEY, (err, decoded) => {
+        if (err) {
+          return res.status(401).json({ message: "Unauthorized" });
+        }
+        req.user = decoded; // Set decoded payload to req.user
         next();
+      });
+    } else {
+      next();
     }
-})
+  });
+  
 
 
 app.use("/api/users", userRouter);
 
 app.use("/api/gallery", galleryItemRouter);
+
+app.use("/api/category",categoryRouter)
 
 
 app.listen(5000, () => {
