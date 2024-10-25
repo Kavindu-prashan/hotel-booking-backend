@@ -35,62 +35,63 @@ export const postUser = async (req, res) => {
 
 
 export function loginUser(req, res) {
-    const credentials = req.body;
-  
-    User.findOne({ email: credentials.email }).then((user) => {
-  
-      if (user == null) {
+  const credentials = req.body;
+
+  User.findOne({ email: credentials.email }).then((user) => {
+
+    if (user == null) {
+      res.status(403).json({
+        message: 'User not found',
+      });
+    } else {
+      const isPasswordValid = bcrypt.compareSync(credentials.password, user.password);
+
+      if (!isPasswordValid) {
         res.status(403).json({
-          message: 'User not found',
+          message: 'Incorrect password',
         });
       } else {
-        const isPasswordValid = bcrypt.compareSync(credentials.password, user.password);
-  
-        if (!isPasswordValid) {
-          res.status(403).json({
-            message: 'Incorrect password',
-          });
-        } else {
-          const payload = {
-            id: user._id,
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            type: user.type,
-          };
-  
-          const token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: '48h' });
-  
-          res.json({
-            message: 'User found',
-            user: user,
-            token: token,
-          });
-        }
-      }
-    });
-  }
-  export function isAdminValid(req){
+        const payload = {
+          id: user._id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          type: user.type,
+        };
 
-    if(req.user == null){
-      return false
+        const token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: '48h' });
+
+        res.json({
+          message: 'User found',
+          user: user,
+          token: token,
+        });
+      }
     }
-    if(req.user.type != "admin"){
-      return false
-    }
-    return true;
-    
+  });
+}
+
+export function isAdminValid(req){
+
+  if(req.user == null){
+    return false
   }
-  export function isCustomerValid(req){
-  
-    if(req.user == null){
-      return false
-    }
-    console.log(req.user)
-    if(req.user.type != "customer"){
-      return false
-    }
-  
-    return true;
-    
+  if(req.user.type != "admin"){
+    return false
   }
+  return true;
+  
+}
+export function isCustomerValid(req){
+
+  if(req.user == null){
+    return false
+  }
+  console.log(req.user)
+  if(req.user.type != "customer"){
+    return false
+  }
+
+  return true;
+  
+}

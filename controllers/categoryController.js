@@ -1,4 +1,3 @@
-
 import Category from "../models/category.js"
 import {isAdminValid} from "./userControllers.js"
 export function createCategory(req,res){
@@ -75,24 +74,24 @@ export function deleteCategory(req,res){
   
 }
 export function getCategory(req,res){
-  Category.find().then(
-    (result)=>{
-      res.json(
-        {
-          categories : result 
-        }
-      )
-    }
-  ).catch(
-    ()=>{
-      res.json(
-        {
-          message : "Failed to get categories"
-        }
-      )
-    }
-  )
-}
+    Category.find().then(
+      (result)=>{
+        res.json(
+          {
+            categories : result 
+          }
+        )
+      }
+    ).catch(
+      ()=>{
+        res.json(
+          {
+            message : "Failed to get categories"
+          }
+        )
+      }
+    )
+  }
 
 export function getCategoryByName(req,res){
   const name = req.params.name;
