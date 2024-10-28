@@ -1,34 +1,34 @@
 import mongoose from "mongoose";
 
 const bookingSchema = new mongoose.Schema({
-
-  bookingId:{
+  bookingId: {
     type: Number,
     required: true,
     unique: true
   },
-  roomId:{
+  roomId: {
     type: Number,
     required: true
   },
-  email:{
+  email: {
     type: String,
     required: true
   },
-  status:{
+  status: {
     type: String,
+    enum: ["pending", "confirmed", "cancelled"],
     required: true,
     default: "pending"
   },
-  reason:{
+  reason: {
     type: String,
     default: ""
   },
-  start:{
+  start: {
     type: Date,
     required: true
   },
-  end:{
+  end: {
     type: Date,
     required: true
   },
@@ -36,13 +36,12 @@ const bookingSchema = new mongoose.Schema({
     type: String,
     default: ""
   },
-  timestamp:{
+  timestamp: {
     type: Date,
     default: Date.now
   }
-})
+});
 
-const Booking = mongoose.model("Bookings",bookingSchema)
-
+const Booking = mongoose.model("Booking", bookingSchema);
 
 export default Booking;
